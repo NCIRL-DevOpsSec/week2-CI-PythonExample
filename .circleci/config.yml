@@ -1,5 +1,17 @@
 version: 2.1
 
+workflows:
+  build_and_test:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - main
+      - test:
+          requires:
+            - build
+
 jobs:
   build:
     working_directory: ~/circleci-python
@@ -16,10 +28,4 @@ jobs:
       - checkout
       - run: python3 main-test.py
 
-workflows:
-  build_and_test:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
+
