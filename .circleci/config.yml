@@ -11,6 +11,13 @@ workflows:
       - test:
           requires:
             - build
+      - deploy:
+          filters:
+            branches:
+              only:
+                - main
+          requires: 
+            - test
 
 jobs:
   build:
@@ -27,5 +34,11 @@ jobs:
     steps:
       - checkout
       - run: python3 main-test.py
-
+  deploy:
+    docker:
+      - image: circleci/node:10.16.3
+    steps:
+      - run:
+          name: deploy-application
+          command: ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS "rm -rf week2-CI-PythonExample;git clone https://github.com/NCIRL-DevOpsSec/week2-CI-PythonExample.git"
 
